@@ -1,0 +1,6 @@
+.DS_Store
+config.yaml
+.claude/settings.local.json
+__pycache__/
+*.pyc
+node_modules/

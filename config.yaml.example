@@ -1,0 +1,32 @@
+# obsidian-reflect-skill の設定ファイル例
+# 実際に使う際は `config.yaml` にコピーして値を調整する（config.yaml は .gitignore 対象）。
+# ここに書く値は「Vault共通ポリシー」からの差分がある場合の上書き用。
+# デフォルト値はPicketfence Labs Vaultの規約（PARA構成）を想定している。
+
+vault:
+  # このVaultのルート絶対パス
+  root: "/absolute/path/to/your/vault"
+
+folders:
+  inbox: "00-Inbox"
+  projects: "01-Projects"
+  areas: "02-Areas"
+  resources: "03-Resources"
+  archive: "04-Archive"
+  daily: "05-Daily"
+  templates: "06-Templates"
+  sources: "07-Sources"
+
+frontmatter:
+  domain_field: "domain"        # 配列。ノートの技術テーマ分類
+  review_cadence_field: "review_cadence"
+  last_reviewed_field: "last_reviewed"
+
+proposals:
+  # 提案の出力先（Inboxフォルダからの相対パス、ファイル名は日付が自動付与される）
+  output_filename_prefix: "reflect-proposals"
+
+maintenance_heuristics:
+  # 陳腐化候補と判定する閾値（Ars Contexta実装を参考にした初期値）
+  stale_after_days: 30
+  stale_max_incoming_links: 2

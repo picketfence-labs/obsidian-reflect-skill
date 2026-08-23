@@ -1,0 +1,27 @@
+# obsidian-reflect-skill
+
+Obsidian VaultのPARA構成ノートに対して、Reflect（関連発見・MOC更新提案）とReweave（既存ノートへの接続追加・claim更新提案）を行うClaude Code Skillを実装するリポジトリ。
+
+## 設計仕様ドキュメント（実装を始める前に必ず読むこと）
+このSkillの上流設計は、開発者のObsidian Vault（Picketfence Labs）内のProjectで完結している。以下のファイルに、スコープ・非スコープ・安全設計・トリガー方法・出力フォーマット・README下書きなどが確定済みの内容としてまとまっている:
+
+```
+/Users/shinichi.hashitanikonghq.com/Workspace/picketfence-labs/01-Projects/2026-08_Ars-Contextaプロセスへの移行検討/notes/2026-08-23_自作Skill設計仕様書（PhaseA）.md
+```
+
+このパスは`~/.claude/settings.json`の`permissions.additionalDirectories`経由で既にアクセス可能なはず（新規セッションで`/memory`により確認できる）。実装方針に疑問が生じた場合、まずこのドキュメント（および同じProject内の関連調査メモ）を参照すること。
+
+## このリポジトリの位置づけ
+- **本Vault共通ポリシー**（PARAフォルダ構成、`domain`配列frontmatter、`[[wikilink]]`接続、Git管理）を前提に実装する。特定Vault固有の情報（絶対パス・個人情報・実データ）はハードコードしない
+- 完成後はユーザースコープ `~/.claude/skills/obsidian-reflect/` に配置され、複数のVaultで共通利用される想定
+- GitHubで公開する前提のリポジトリ
+
+## 技術スタック
+- Claude Code Skill（`SKILL.md`）＋ 補助スクリプト（bash/python想定）
+- 依存確定後、`.claude/settings.json`の権限分割・LSP等の要否をここに追記する
+
+## 開発の進め方
+1. 設計仕様ドキュメントを読み、`SKILL.md`のスケルトンを本実装に仕上げる
+2. `config.yaml.example`のスキーマを固め、Vaultごとの差し替え可能性を検証する
+3. 機械的チェック（リンク切れ・孤立ノート検出）を補助スクリプトとして実装する
+4. 実際のVault（Picketfence Labs）を対象にPoCを行い、`00-Inbox/YYYY-MM-DD_reflect-proposals.md`が正しく生成されるか確認する

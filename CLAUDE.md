@@ -25,3 +25,10 @@ Obsidian VaultのPARA構成ノートに対して、Reflect（関連発見・MOC�
 2. `config.yaml.example`のスキーマを固め、Vaultごとの差し替え可能性を検証する
 3. 機械的チェック（リンク切れ・孤立ノート検出）を補助スクリプトとして実装する
 4. 実際のVault（Picketfence Labs）を対象にPoCを行い、`00-Inbox/YYYY-MM-DD_reflect-proposals.md`が正しく生成されるか確認する
+5. **開発が完了しcommitしたら、セッション終了時に必ず開発ナレッジをVault側へ書き出す。** 手順:
+   1. `/Users/shinichi.hashitanikonghq.com/Workspace/picketfence-labs/06-Templates/External Repo Knowledge Handoff Template.md`を読む（設計仕様ドキュメントと同じ`additionalDirectories`経由でアクセス可能）
+   2. そのテンプレートに沿って、実装中に得た学び・ハマりどころ（設定ファイルのスキーマ判断、機械的チェックのエッジケース対応、有効だったプロンプトパターン等）をまとめる
+   3. `/Users/shinichi.hashitanikonghq.com/Workspace/picketfence-labs/00-Inbox/YYYY-MM-DD_obsidian-reflect-skill-knowledge.md`として書き出す（`YYYY-MM-DD`はその日の日付。この絶対パスへの書き込みも`additionalDirectories`経由で可能）
+   4. 書き出したファイルパスをユーザーへの完了報告に含める（「commitしました」だけで終わらせない）
+
+   これは`00-Inbox/YYYY-MM-DD_reflect-proposals.md`（Skill自体が生成する機能的な出力）とは別物なので混同しないこと。こちらは「このリポジトリでの開発プロセスそのもの」についてのナレッジ。

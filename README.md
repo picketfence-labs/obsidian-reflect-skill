@@ -4,7 +4,7 @@ Obsidian VaultのPARA構成ノートを対象に、関連ノートの見落と�
 
 [agenticnotetaking/arscontexta](https://github.com/agenticnotetaking/arscontexta) の「6 Rs」パイプラインのうち、LLMの意味的判断が本質的に必要な Reflect / Reweave の発想のみを、既存のPARA運用Vaultに後付けできる形で軽量に再実装したもの。Ars Contexta本体の全面採用（3空間構成へのゼロからの作り直し、`git add -A --no-verify`による無差別auto-commit等）は既存Vault運用と衝突するため見送り、発想のみを移植している。
 
-> **Status: 設計段階（スキャフォールディングのみ）。** `SKILL.md`の本体プロンプトは未実装。設計の経緯・意思決定はこのリポジトリの外部（開発者のObsidian Vault内Project）で管理されている。
+> **Status: 実装済み・実運用でのPoC前。** `SKILL.md`本体と`scripts/find_candidates.sh`は実装済み。設計の経緯・意思決定はこのリポジトリの外部（開発者のObsidian Vault内Project）で管理されている。
 
 ## これは何をするか
 - 指定したノート（またはフォルダ）について、`domain`等のメタデータや内容から関連する既存ノートを探し、リンク追加やMOC（README/Knowledge Map相当）更新の**提案**を生成する（Reflect相当）

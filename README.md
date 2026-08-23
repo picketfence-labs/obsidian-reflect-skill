@@ -47,6 +47,16 @@ Obsidian VaultのPARA構成ノートを対象に、関連ノートの見落と�
 
 実例: 2026-08-23、あるProjectのArchive化時にdomainが完全に重なる別の関連Projectの存在に気づけなかったことがあり、この推奨事項を追加した。
 
+## 補助スクリプト: domain索引（Bases/Dataviewの計算結果が見えない問題への対応）
+Claude CodeはObsidianのBases/Dataviewが実際に計算した結果（例: Knowledge Mapダッシュボードが返すdomain別グルーピング）を見ることができない（見えるのはクエリの定義だけ）。この構造的な見えなさが原因で、2026-08-23、あるProjectのArchive化時にdomainが完全に重なる別の関連Projectを見落とした実例が発生した。
+
+`scripts/domain_index.sh`は、frontmatterの`domain`配列を全ノートから機械的に読み取り、この見えなさを平文で埋める補助スクリプト（LLM推論は使わない）:
+```
+./scripts/domain_index.sh <vault_root> [config.yaml]                   # domain→ノート一覧の全体索引
+./scripts/domain_index.sh <vault_root> [config.yaml] --note <note.md>  # 指定ノートとdomainが重なる他ノートの一覧
+```
+「推奨トリガー」（ナレッジ化直前・Archive化直前）のdomain重複チェックは、この`--note`モードを使えば`SKILL.md`側の都度Grepより素早く確認できる。
+
 ## 設計思想・安全設計
 - 提案は必ず人間の承認を経てから適用する（自動適用モードは提供しない）
 - 変更提案には次の4つの基準を課す: 変更理由を言語化できるか（Articulation）／実際に改善するか（Improvement）／単一の焦点を保っているか（Coherence）／リンク網を改善するか（Network）

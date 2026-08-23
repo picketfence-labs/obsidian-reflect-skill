@@ -6,8 +6,9 @@ Obsidian VaultのPARA構成ノートに対して、Reflect（関連発見・MOC�
 このSkillの上流設計は、開発者のObsidian Vault（Picketfence Labs）内のProjectで完結している。以下のファイルに、スコープ・非スコープ・安全設計・トリガー方法・出力フォーマット・README下書きなどが確定済みの内容としてまとまっている:
 
 ```
-/Users/shinichi.hashitanikonghq.com/Workspace/picketfence-labs/01-Projects/2026-08_Ars-Contextaプロセスへの移行検討/notes/2026-08-23_自作Skill設計仕様書（PhaseA）.md
+/Users/shinichi.hashitanikonghq.com/Workspace/picketfence-labs/04-Archive/2026-08_Ars-Contextaプロセスへの移行検討/notes/2026-08-23_自作Skill設計仕様書（PhaseA）.md
 ```
+（元のProjectは開発完了に伴い`04-Archive`へ移動済み。継続的な知見蓄積は`02-Areas/Repos/obsidian-reflect-skill.md`側で行われている）
 
 このパスは`~/.claude/settings.json`の`permissions.additionalDirectories`経由で既にアクセス可能なはず（新規セッションで`/memory`により確認できる）。実装方針に疑問が生じた場合、まずこのドキュメント（および同じProject内の関連調査メモ）を参照すること。
 

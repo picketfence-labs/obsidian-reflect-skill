@@ -40,6 +40,9 @@ Obsidian VaultのPARA構成ノートを対象に、関連ノートの見落と�
 ### wrapup等のセッション終了フローとの連携（任意）
 セッション終了時に軽量な機械的チェック（最終更新日・被リンク数等の閾値ベース）でレビュー候補ノートを検出し、`/obsidian-reflect`の実行を促すリマインドを出す統合も可能（本Skill単体ではなく、Vault側のセッション終了Skillへの追加実装が必要）。
 
+### Project Archive時の推奨トリガー
+Projectを`01-Projects`から`04-Archive`へ移動する直前に、そのProject内のノートを対象に本Skillを実行することを推奨する。domainタグが重なる他の関連ノート（別Project/Area/Resource）の見落としに気づかないままArchive化してしまう事故を防ぐための最終チェック。実例: 2026-08-23、あるProjectのArchive化時にdomainが完全に重なる別の関連Projectの存在に気づけなかったことがあり、この推奨事項を追加した。
+
 ## 設計思想・安全設計
 - 提案は必ず人間の承認を経てから適用する（自動適用モードは提供しない）
 - 変更提案には次の4つの基準を課す: 変更理由を言語化できるか（Articulation）／実際に改善するか（Improvement）／単一の焦点を保っているか（Coherence）／リンク網を改善するか（Network）

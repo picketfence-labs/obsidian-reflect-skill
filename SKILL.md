@@ -1,6 +1,6 @@
 ---
 name: obsidian-reflect
-description: PARA構成のObsidian Vault内で、指定したノート（またはフォルダ）についてArs Contextaの「Reflect」（関連発見・MOC更新の提案）と「Reweave」（既存ノートへの接続追加・claim更新の提案）に相当する処理を行う際に使う。ノートを直接書き換えることはなく、提案をVaultのInboxフォルダに出力するだけ。ユーザーが明示的にこのSkillの実行を求めた時のみ使う（自動実行はしない）。
+description: PARA構成のObsidian Vault内で、指定したノート（またはフォルダ）についてArs Contextaの「Reflect」（関連発見・MOC更新の提案）と「Reweave」（既存ノートへの接続追加・claim更新の提案）に相当する処理を行う際に使う。ノートを直接書き換えることはなく、提案をVaultのInboxフォルダに出力するだけ。基本はユーザーが明示的にこのSkillの実行を求めた時に使うが、**Projectを`01-Projects`から`04-Archive`へ移動する直前にも、そのProject内のノートを対象に実行することが推奨される**（domainが重なる他ノートの見落としを防ぐ最終チェックとして。既存ノートの自動書き換えは行わない範囲）。
 ---
 
 # obsidian-reflect

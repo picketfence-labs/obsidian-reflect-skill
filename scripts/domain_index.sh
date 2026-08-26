@@ -61,6 +61,7 @@ yaml_value() {
 }
 
 DOMAIN_FIELD="$(yaml_value "domain_field" "domain")"
+FOLDER_LOCAL_REPO="$(yaml_value "local_repo" "LOCAL_REPO")"
 
 # IFSの多文字区切りは "${arr[*]}" では先頭1文字しか使われない（bashの既知の仕様）ため、
 # ", " 区切りの結合は専用関数で行う
@@ -114,7 +115,7 @@ while IFS= read -r -d '' f; do
     [[ -z "$d" ]] && continue
     printf '%s\t%s\n' "$d" "$note" >> "$PAIRS_FILE"
   done < <(split_domain_values "$line")
-done < <(find . -type f -name '*.md' -not -path '*/.*/*' -print0)
+done < <(find . -type f -name '*.md' -not -path '*/.*/*' -not -path "./${FOLDER_LOCAL_REPO}/*" -print0)
 
 if [[ -n "$NOTE_ARG" ]]; then
   # --- (b) 指定ノートとの重複チェック ---

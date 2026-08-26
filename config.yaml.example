@@ -16,6 +16,10 @@ folders:
   daily: "05-Daily"
   templates: "06-Templates"
   sources: "07-Sources"
+  # Vault内部にクローンされたローカルリポジトリの集約先（存在すれば）。
+  # 各エントリは自身の.git・node_modules等を持つ独立リポジトリのため、
+  # ノート候補・リンク先実在チェックの対象からは除外する。
+  local_repo: "LOCAL_REPO"
 
 frontmatter:
   domain_field: "domain"        # 配列。ノートの技術テーマ分類

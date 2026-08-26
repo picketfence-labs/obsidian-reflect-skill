@@ -47,6 +47,7 @@ yaml_value() {
 
 FOLDER_TEMPLATES="$(yaml_value "templates" "06-Templates")"
 FOLDER_DAILY="$(yaml_value "daily" "05-Daily")"
+FOLDER_LOCAL_REPO="$(yaml_value "local_repo" "LOCAL_REPO")"
 STALE_AFTER_DAYS="$(yaml_value "stale_after_days" "30")"
 STALE_MAX_INCOMING_LINKS="$(yaml_value "stale_max_incoming_links" "2")"
 
@@ -74,7 +75,7 @@ extract_links() {
 : > "$NOTES_FILE"
 while IFS= read -r -d '' f; do
   printf '%s\n' "${f#./}" >> "$NOTES_FILE"
-done < <(find . -type f -name '*.md' -not -path '*/.*/*' -not -path "./${FOLDER_TEMPLATES}/*" -not -path "./${FOLDER_DAILY}/*" -print0)
+done < <(find . -type f -name '*.md' -not -path '*/.*/*' -not -path "./${FOLDER_TEMPLATES}/*" -not -path "./${FOLDER_DAILY}/*" -not -path "./${FOLDER_LOCAL_REPO}/*" -print0)
 sort -o "$NOTES_FILE" "$NOTES_FILE"
 
 if [[ ! -s "$NOTES_FILE" ]]; then
@@ -82,11 +83,14 @@ if [[ ! -s "$NOTES_FILE" ]]; then
   exit 0
 fi
 
-# リンク先の実在チェック用: Vault全体（.gitのみ除外。テンプレート・添付ファイル・.claude等の設定ファイルも含む）
+# リンク先の実在チェック用: Vault全体（.git・LOCAL_REPOのみ除外。テンプレート・添付ファイル・.claude等の設定ファイルは含む）
+# LOCAL_REPOを除外する理由: このファイルはbasenameだけを保存するため、node_modules配下の
+# README.md/CHANGELOG.md等の量産ファイルが混ざると、Vault側の本当にリンク切れしているノートが
+# 同名のbasenameと偶然一致し「実在する」と誤検出されてしまう（false negative）。
 : > "$ALL_FILES_FILE"
 while IFS= read -r -d '' f; do
   basename "$f"
-done < <(find . -type f -not -path './.git/*' -print0) > "$ALL_FILES_FILE"
+done < <(find . -type f -not -path './.git/*' -not -path "./${FOLDER_LOCAL_REPO}/*" -print0) > "$ALL_FILES_FILE"
 
 # 対象ノート中の全wikilinkリンク先（表示名・見出しアンカー・フォルダパスを除去したファイル名部分）
 : > "$LINKS_FILE"

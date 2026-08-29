@@ -20,6 +20,16 @@
 # コードスパン（`...`）・コードフェンス（```...```）内に書かれた [[wikilink]] は、記法の
 # 説明例であって実リンクではないことが多いため、リンク抽出前に取り除く。
 #
+# Markdownテーブルのセル内では `|` がそのままだと列区切りと解釈されるため、表示名付き
+# wikilinkは `[[target\|display]]` のようにパイプをバックスラッシュでエスケープすることがある。
+# 表示名を取り除く際はこのエスケープ用バックスラッシュも一緒に消す必要がある
+# （`\|` の直前が末尾に残ると、実在するファイルへのリンクが誤って「リンク切れ」判定される）。
+#
+# 被リンク数カウント用のLINKS_FILEは、リンク先の拡張子を正規化して`.md`無しの形に揃える
+# （`[[note.md|display]]` のように拡張子付きでリンク先を書いた場合でも、ノート名基準の
+# 被リンクカウントと一致させるため。さもないと拡張子付きでリンクされているノートが
+# 誤って「孤立ノート」判定される）。
+#
 # 出力は標準出力にプレーンテキスト（wrapup skill等がそのままユーザーに提示できる形）。
 # ノートの中身を書き換えることは一切しない。
 #
@@ -97,7 +107,7 @@ done < <(find . -type f -not -path './.git/*' -not -path "./${FOLDER_LOCAL_REPO}
 while IFS= read -r note; do
   extract_links "$note"
 done < "$NOTES_FILE" \
-  | sed -E 's/^!?\[\[//; s/\]\]$//; s/\|.*$//; s/#.*$//; s#^.*/##' \
+  | sed -E 's/^!?\[\[//; s/\]\]$//; s/\\?\|.*$//; s/#.*$//; s#^.*/##; s/\.md$//' \
   >> "$LINKS_FILE"
 
 # リンク先が実在するか判定する（拡張子なし表記＝ノート名、拡張子あり表記＝ファイル名そのもの、の両方を試す）
@@ -134,7 +144,7 @@ broken_found=0
 while IFS= read -r note; do
   while IFS= read -r raw_link; do
     [[ -z "$raw_link" ]] && continue
-    target="$(sed -E 's/^!?\[\[//; s/\]\]$//; s/\|.*$//; s/#.*$//' <<<"$raw_link")"
+    target="$(sed -E 's/^!?\[\[//; s/\]\]$//; s/\\?\|.*$//; s/#.*$//' <<<"$raw_link")"
     target_base="$(basename "$target")"
     [[ -z "$target_base" ]] && continue
     if ! link_target_exists "$target_base"; then

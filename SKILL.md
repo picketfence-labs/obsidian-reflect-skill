@@ -22,7 +22,7 @@ PARA構成のObsidian Vaultに対して、Ars Contextaの6 Rsのうち「Reflect
 ## 事前準備: 設定の読み込み
 1. このSKILL.mdと同じディレクトリにある`config.yaml`を探す。存在すればそれを使う
 2. 無ければ`config.yaml.example`の値をデフォルトとして使う。この場合、処理の最後にユーザーへ「`config.yaml`が未作成のため`config.yaml.example`のデフォルト値（Picketfence Labs Vaultの規約）を使った」旨を一言添える
-3. 読み込んだ設定から以降で使う値を確定する: `vault.root`、`folders.*`（inbox/projects/areas/resources/archive/daily/templates/sources）、`frontmatter.domain_field`、`proposals.output_filename_prefix`
+3. 読み込んだ設定から以降で使う値を確定する: `vault.root`、`folders.*`（inbox/projects/areas/resources/archive/daily/templates/sources）、`frontmatter.domain_field`、`proposals.output_filename_prefix`、`proposals.archive_subfolder`
 
 ## 手順
 
@@ -79,7 +79,19 @@ PARA構成のObsidian Vaultに対して、Ars Contextaの6 Rsのうち「Reflect
 - 出力ファイルへのパス、生成した提案の件数、絞り込みで対象外にした候補数（あれば）を報告する
 - 「内容を確認し、必要な変更は手動で反映してください」と明記する
 - git add/commit/pushは行わない旨、必要であれば改めて触れる
-- **提案ファイル自体の後片付けについても案内する**: `00-Inbox`は一時置き場であり、`reflect-proposals.md`はProject/Area/Resourceに昇格させる性質のノートではなく、内容を確認・反映（または却下）し終えたら役目を終える一回限りの作業指示書である。反映が終わったらこのファイル自体を削除してよい旨を伝える（Inboxに置きっぱなしにして陳腐化させないため）
+- **提案ファイル自体の後処理についても案内する**: 未処理項目がある間はInboxに保持する。全項目の採否が決まったら、採用／非採用／保留、理由、反映先、検証結果を同じファイルへ追記し、`{folders.archive}/{proposals.archive_subfolder}/`へ移す。削除しない
+
+## 提案処理後の保存（Skill本体とは別フロー）
+
+このSkillは提案生成までを担当し、対象ノートの変更やArchive移動は行わない。利用者または別の作業フローが提案を処理する際は、効果・妥当性を後から評価できるよう次を満たす。
+
+1. 各提案を`採用 | 非採用 | 保留`に分類する。
+2. 採用は実施内容と反映先、非採用・保留は理由と、必要なら移管先の未解決タスクを記録する。
+3. リンク、frontmatter、対象ノート固有のvalidator等、実施した検証結果を記録する。
+4. 全項目の判断と必要な反映が完了した時だけ、提案ファイルを`{folders.archive}/{proposals.archive_subfolder}/`へ移す。未処理項目が残る間はInboxに保持する。
+5. 移動前に提案ファイルへの参照を検索し、Archive後のパスへ更新する。
+
+Archiveされた提案はProject／Area／Resourceの正本ではない。Reflect/Reweaveが何を発見し、どの提案が有効だったかを評価する履歴である。未解決の実作業は正本側のタスクへ移管する。
 
 ## 出力フォーマット
 ```markdown
@@ -114,5 +126,5 @@ created: <YYYY-MM-DD>
 - <候補ノート名>: <対象外にした理由>
 
 ---
-*このファイルは`obsidian-reflect` Skillが生成した提案です。内容を確認し、必要な変更は手動でノートに反映してください。ノート本体・git commit/pushへの操作は行っていません。反映（または却下）が終わったら、このファイル自体を削除して構いません（Inboxの一時置き場に置きっぱなしにしないため）。*
+*このファイルは`obsidian-reflect` Skillが生成した提案です。内容を確認し、必要な変更は手動でノートに反映してください。ノート本体・git commit/pushへの操作は行っていません。未処理項目がある間はInboxに保持し、全項目の採否・理由・反映先・検証結果を追記した後、設定されたReflect Proposal用Archiveへ移してください。*
 ```

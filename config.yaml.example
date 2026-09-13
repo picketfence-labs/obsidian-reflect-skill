@@ -29,6 +29,8 @@ frontmatter:
 proposals:
   # 提案の出力先（Inboxフォルダからの相対パス、ファイル名は日付が自動付与される）
   output_filename_prefix: "reflect-proposals"
+  # 全提案の処理結果を追記した後に移す、folders.archive配下の保存先
+  archive_subfolder: "Reflect Proposals"
 
 maintenance_heuristics:
   # 陳腐化候補と判定する閾値（Ars Contexta実装を参考にした初期値）

@@ -20,9 +20,11 @@ PARA構成のObsidian Vaultに対して、Ars Contextaの6 Rsのうち「Reflect
 - claimの無断変更・過度なノート分割・根拠のない接続追加・文体の勝手な書き換えは提案にも含めない
 
 ## 事前準備: 設定の読み込み
-1. このSKILL.mdと同じディレクトリにある`config.yaml`を探す。存在すればそれを使う
-2. 無ければ`config.yaml.example`の値をデフォルトとして使う。この場合、処理の最後にユーザーへ「`config.yaml`が未作成のため`config.yaml.example`のデフォルト値（Picketfence Labs Vaultの規約）を使った」旨を一言添える
-3. 読み込んだ設定から以降で使う値を確定する: `vault.root`、`folders.*`（inbox/projects/areas/resources/archive/daily/templates/sources）、`frontmatter.domain_field`、`proposals.output_filename_prefix`、`proposals.archive_subfolder`
+1. 対象Vaultのルートを確定する。現在の作業repositoryが対象Vaultならそのrootを使う。別のVaultや絶対pathが指定された場合は、その指定を優先する。安全に確定できなければ推測せず確認する
+2. `<vault-root>/.agents/skill-config/obsidian-reflect.yaml`を探す。存在すればhost設定として使う
+3. host設定が無ければ、このSKILL.mdと同じディレクトリの`config.yaml`を探す。従来のmachine-global installとの互換性のため、存在すれば使う
+4. どちらも無ければ`config.yaml.example`をgeneric defaultとして使い、pathの仮定を結果で報告する
+5. 読み込んだ設定から以降で使う値を確定する: `vault.root`、`folders.*`（inbox/projects/areas/resources/archive/daily/templates/sources）、`frontmatter.domain_field`、`proposals.output_filename_prefix`、`proposals.archive_subfolder`。`vault.root`が`.`なら対象Vault rootへ解決する
 
 ## 手順
 

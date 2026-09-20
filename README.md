@@ -27,9 +27,23 @@ Obsidian VaultのPARA構成ノートを対象に、関連ノートの見落と�
 上記に該当しないVault（フォルダ構成が大きく異なる、frontmatter規約がない等）では、`config.yaml`でのマッピング調整が必要、または現状は動作対象外。
 
 ## インストール
-1. このリポジトリをclone
-2. `~/.claude/skills/obsidian-reflect/` にコピー（またはシンボリックリンク）
-3. `config.yaml.example` を参考に、対象Vaultのフォルダ名・frontmatterフィールド名を設定した `config.yaml` を用意する
+
+### Vaultごとにversionを固定する場合（推奨）
+
+1. 対象Vaultの`.agents/skills/obsidian-reflect`へ、このrepositoryをGit submoduleとして追加する
+2. Codexは`.agents/skills/`から読み、Claude Codeは`.claude/skills/obsidian-reflect`から同じcheckoutへのrelative symlinkを使う
+3. `config.yaml.example`を対象Vaultの`.agents/skill-config/obsidian-reflect.yaml`へコピーし、Vault固有設定を管理する
+
+consumer Vaultのgitlinkが利用versionを固定する。更新はsubmodule commitの変更としてreviewし、rollbackは以前のgitlinkへ戻す。
+
+### machine-globalに利用する場合
+
+1. このrepositoryをcloneする
+2. `~/.agents/skills/obsidian-reflect`からcloneへのsymlinkを作る
+3. providerが別のSkill directoryを必要とする場合は、そこから同じcloneを参照する
+4. `config.yaml.example`を参考に、Skill directoryのgit管理外`config.yaml`を用意する
+
+host Vault設定が存在する場合は、machine-global `config.yaml`より優先される。
 
 ## 使い方
 ```

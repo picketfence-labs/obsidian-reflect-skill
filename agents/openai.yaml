@@ -1,0 +1,4 @@
+interface:
+  display_name: "Obsidian Reflect"
+  short_description: "Find missing Vault relationships and write review proposals"
+  default_prompt: "Review the specified Vault note or folder for Reflect/Reweave proposals without editing source notes."

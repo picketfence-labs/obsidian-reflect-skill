@@ -11,7 +11,7 @@
 #   - リンク切れ: 本文中の [[wikilink]] が指すファイルがVault内に見つからないもの
 #   - 孤立ノート: 被リンク数がゼロのノート（README.mdは除く）
 #
-# 対象は 00-Inbox〜07-Sources 等のノート本体のみ。06-Templates（テンプレート）、
+# 対象は 00-Inbox〜07-Sources 等のノート本体のみ。ルートのinstruction / adapter / Home、06-Templates（テンプレート）、
 # 05-Daily（日次ログ。恒常的に被リンクされる性質のノートではないため陳腐化/孤立の対象外）、
 # ドット始まりのフォルダ（.git、.obsidian、.claude 等の設定・ツール領域）はノート候補から除外する。
 # ただしリンク先の実在チェックでは、テンプレートや添付ファイルも含めたVault全体を対象にする
@@ -85,7 +85,12 @@ extract_links() {
 : > "$NOTES_FILE"
 while IFS= read -r -d '' f; do
   printf '%s\n' "${f#./}" >> "$NOTES_FILE"
-done < <(find . -type f -name '*.md' -not -path '*/.*/*' -not -path "./${FOLDER_TEMPLATES}/*" -not -path "./${FOLDER_DAILY}/*" -not -path "./${FOLDER_LOCAL_REPO}/*" -print0)
+done < <(find . -type f -name '*.md' \
+  -not -path '*/.*/*' \
+  -not -path './AGENTS.md' -not -path './CLAUDE.md' -not -path './VAULT.md' \
+  -not -path './USER.md' -not -path './RULES.md' -not -path './Home.md' -not -path './README.md' \
+  -not -path "./${FOLDER_TEMPLATES}/*" -not -path "./${FOLDER_DAILY}/*" \
+  -not -path "./${FOLDER_LOCAL_REPO}/*" -print0)
 sort -o "$NOTES_FILE" "$NOTES_FILE"
 
 if [[ ! -s "$NOTES_FILE" ]]; then

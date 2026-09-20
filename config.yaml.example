@@ -1,11 +1,11 @@
-# obsidian-reflect-skill の設定ファイル例
-# 実際に使う際は `config.yaml` にコピーして値を調整する（config.yaml は .gitignore 対象）。
-# ここに書く値は「Vault共通ポリシー」からの差分がある場合の上書き用。
-# デフォルト値はPicketfence Labs Vaultの規約（PARA構成）を想定している。
+# obsidian-reflect-skillのgeneric設定例。
+# Vaultでcommit pinする場合は、対象Vaultの
+# `.agents/skill-config/obsidian-reflect.yaml`へコピーして調整する。
+# 従来どおりSkill directoryの`config.yaml`も利用できるが、git管理外とする。
 
 vault:
-  # このVaultのルート絶対パス
-  root: "/absolute/path/to/your/vault"
+  # 対象Vault rootからの相対path。別Vaultを扱う場合だけ絶対pathへ変更する。
+  root: "."
 
 folders:
   inbox: "00-Inbox"
@@ -16,9 +16,7 @@ folders:
   daily: "05-Daily"
   templates: "06-Templates"
   sources: "07-Sources"
-  # Vault内部にクローンされたローカルリポジトリの集約先（存在すれば）。
-  # 各エントリは自身の.git・node_modules等を持つ独立リポジトリのため、
-  # ノート候補・リンク先実在チェックの対象からは除外する。
+  # Vault内部に独立repositoryを置く場合の除外folder。
   local_repo: "LOCAL_REPO"
 
 frontmatter:

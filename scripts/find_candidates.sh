@@ -78,7 +78,16 @@ ALL_FILES_FILE="${WORKDIR}/all_files.txt"  # リンク先の実在チェック�
 extract_links() {
   awk 'BEGIN{fence=0} /^```/{fence=!fence; next} fence{next} {print}' "$1" \
     | sed -E 's/`[^`]*`//g' \
-    | grep -oE '\[\[[^]]+\]\]' 2>/dev/null || true
+    | awk '{
+        # 単独の ] はノート名に含められる。閉じるのは ]] のみ。
+        while (start = index($0, "[[")) {
+          $0 = substr($0, start + 2)
+          finish = index($0, "]]")
+          if (!finish) break
+          if (finish > 1) print "[[" substr($0, 1, finish - 1) "]]"
+          $0 = substr($0, finish + 2)
+        }
+      }'
 }
 
 # ノート候補一覧（ファイル名の空白に対応するためNUL区切りで読む）

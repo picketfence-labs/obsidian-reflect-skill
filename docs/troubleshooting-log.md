@@ -10,3 +10,7 @@
 - Harness feedback: isolated synthetic fixtures and a pinned legacy checkout
   permit differential checks without exporting consumer data. Semantic Skill
   validation, human review and consumer deployment remain separate.
+- CI initially could not install Python 3.9 on Ubuntu 26.04 (ubuntu-latest),
+  before tests ran. The official python-versions manifest provides 3.9.25 for
+  Ubuntu 24.04. Pin that runner and disable matrix fail-fast so both platform
+  results are observable. This is a runner setup failure, not a test pass.

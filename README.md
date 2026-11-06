@@ -4,7 +4,7 @@ Obsidian VaultのPARA構成ノートを対象に、関連ノートの見落と�
 
 [agenticnotetaking/arscontexta](https://github.com/agenticnotetaking/arscontexta) の「6 Rs」パイプラインのうち、LLMの意味的判断が本質的に必要な Reflect / Reweave の発想のみを、既存のPARA運用Vaultに後付けできる形で軽量に再実装したもの。Ars Contexta本体の全面採用（3空間構成へのゼロからの作り直し、`git add -A --no-verify`による無差別auto-commit等）は既存Vault運用と衝突するため見送り、発想のみを移植している。
 
-> **Status: 実装済み・実運用でのPoC前。** `SKILL.md`本体と`scripts/find_candidates.sh`は実装済み。設計の経緯・意思決定はこのリポジトリの外部（開発者のObsidian Vault内Project）で管理されている。
+> **Status: 機械的helperを実装済み。意味的Reflect/Reweave全工程のPoC状況とは区別する。** `SKILL.md`本体と`scripts/find_candidates.sh`は実装済み。設計の経緯・意思決定はこのリポジトリの外部（開発者のObsidian Vault内Project）で管理されている。
 
 ## これは何をするか
 - 指定したノート（またはフォルダ）について、`domain`等のメタデータや内容から関連する既存ノートを探し、リンク追加やMOC（README/Knowledge Map相当）更新の**提案**を生成する（Reflect相当）
@@ -22,7 +22,8 @@ Obsidian VaultのPARA構成ノートを対象に、関連ノートの見落と�
 - PARA的なフォルダ構成（Inbox / Projects / Areas / Resources / Archive等の分類）
 - ノートのfrontmatterに`domain`配列などの分類メタデータを持つ
 - `[[wikilink]]`でノート間を接続する
-- Gitで管理されている
+- Bash 3.2以上、Python 3.9以上（標準libraryのみ）、BSD/GNUのgrep・sed
+- Gitで管理されている（補助scriptはGit管理外ならmtimeで判定）
 
 上記に該当しないVault（フォルダ構成が大きく異なる、frontmatter規約がない等）では、`config.yaml`でのマッピング調整が必要、または現状は動作対象外。
 
@@ -78,3 +79,34 @@ Claude CodeはObsidianのBases/Dataviewが実際に計算した結果（例: Kno
 
 ## ライセンス
 MIT License. `LICENSE`参照。
+
+## 補助scriptの実行・検証
+
+既存のCLIとconfig.yamlの簡易読取形式を維持する。Pythonは列挙・domain/wikilink解析・集合/被リンク集計を一括処理する。ネットワーク、pip install、永続索引、Vaultへの書込みは不要。
+
+```bash
+bash scripts/find_candidates.sh /path/to/vault /path/to/host-config.yaml
+bash scripts/domain_index.sh /path/to/vault /path/to/host-config.yaml --note 02-Areas/Topic.md
+bash -n scripts/find_candidates.sh scripts/domain_index.sh
+bash tests/test_find_candidates_root_exclusions.sh
+bash tests/test_find_candidates_wikilinks.sh
+python3 -B -m unittest discover -s tests -p 'test_*.py' -v
+python3 -B tests/benchmark_scan.py --notes 4500 --attachments 55000
+```
+
+旧版checkoutとの出力比較（両checkoutは書換えない）:
+
+```bash
+LEGACY_SCAN_ROOT=/path/to/pinned-baseline python3 -B -m unittest discover -s tests -p test_legacy_compat.py -v
+python3 -B tests/benchmark_scan.py --notes 300 --attachments 3000 --legacy-root /path/to/pinned-baseline
+```
+
+標準出力には完了した結果だけを出す。読取・stat・履歴照会の失敗、無効な閾値、非対応の改行/タブ入りpathはstderr＋非ゼロ終了とし、成功0件として扱わない。閾値には整数を指定する。domainは従来どおり先頭frontmatter内の1行配列のみ対応し、汎用YAML parserではない。コード除外も従来の行頭バッククォート3個のfenceと単一バッククォートspanの規則を保つ。
+
+入力はlive filesystemでありsnapshotではない。並行変更時は版・件数・変更影響を記録し、timeoutや部分出力を成功件数にしない。候補検出の被リンク数は対象ノート内の出現回数をbasename単位で数える（同名ノート・重複リンク・自己リンクを統合する従来のheuristic）。最終更新は従来と同じGitのauthor date、追跡履歴がなければmtimeを使う。
+
+実行環境には対象VaultのreadとBash/Python・読取専用Gitの実行権限が必要。hostのsandbox/approvalを維持し、helper用に広い書込み権限を追加しない。手動実行は対象ノート/MOC・consumer VaultのGitを変更しない。
+
+導入はPRの人間review/merge後にconsumerの固定gitlinkを別途更新する。`scripts/vault_scan.py`を含むcheckout全体を配置し、Python版と上記fixtureを確認する。rollbackはconsumerのgitlinkを以前のcommitへ戻す。machine-globalの別cloneはconsumer固定版と独立に管理する。
+
+選定理由・互換性境界は[設計](docs/design-brief.md)、[ADR](docs/decisions/001-in-memory-scans.md)、[検証結果](docs/test-evidence.md)を参照。

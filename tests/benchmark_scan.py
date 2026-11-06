@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import platform
 import subprocess
 import tempfile
 import time
@@ -54,8 +55,22 @@ def main():
             os.utime(path, (stamp, stamp))
         for index in range(args.attachments):
             (attachments / f'Attachment {index:05d}.txt').write_text('synthetic\n')
+        # Avoid the pinned baseline's GNU stat -f stdout/fallback bug when
+        # comparing on Linux. Current-only scale fixtures remain Git-free.
+        tracked_fixture = bool(args.legacy_root and platform.system() == 'Linux')
+        if tracked_fixture:
+            def git(*argv, env=None):
+                subprocess.run(['git', '-C', str(root), *argv], check=True,
+                               capture_output=True, env=env)
+            git('init', '-q')
+            git('config', 'user.name', 'Fixture')
+            git('config', 'user.email', 'fixture@example.invalid')
+            git('add', '02-Areas')
+            git('commit', '-qm', 'synthetic baseline',
+                env=dict(os.environ, GIT_AUTHOR_DATE=str(int(stamp)) + ' +0000'))
         before = digest(root)
-        report = dict(notes=args.notes, attachments=args.attachments, results={})
+        report = dict(notes=args.notes, attachments=args.attachments,
+                      tracked_fixture=tracked_fixture, results={})
         for script, extra in [('find_candidates.sh', []), ('domain_index.sh', []),
                               ('domain_index.sh', ['--note', '02-Areas/Note 00000.md'])]:
             key = script + (' --note' if extra else '')

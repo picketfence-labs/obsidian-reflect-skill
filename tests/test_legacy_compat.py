@@ -43,6 +43,17 @@ class LegacyCompatibility(unittest.TestCase):
                 '![[Missing.png]][[#same note]][[dir/]][[.]]\n'
                 '`[[inline]]` [[Note [0]]] [[Note [0]]]\n'
                 '```python\n[[fenced]]\n```\n[[Missing]]')
+            # Baseline GNU stat -f can write filesystem text before failing;
+            # keep legacy comparisons on tracked data on both platforms.
+            def git(*args, env=None):
+                subprocess.run(['git', '-C', str(root), *args], check=True,
+                               capture_output=True, env=env)
+            git('init', '-q')
+            git('config', 'user.name', 'Fixture')
+            git('config', 'user.email', 'fixture@example.invalid')
+            git('add', '.')
+            git('commit', '-qm', 'synthetic baseline',
+                env=dict(os.environ, GIT_AUTHOR_DATE=str(int(stamp)) + ' +0000'))
             for script, extra in [('find_candidates.sh', []), ('domain_index.sh', [])] + [
                     ('domain_index.sh', ['--note', f'02-Areas/Note [{n}].md']) for n in range(len(bodies))]:
                 outputs = []

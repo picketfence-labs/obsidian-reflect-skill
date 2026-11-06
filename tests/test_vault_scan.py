@@ -149,7 +149,9 @@ class VaultTests(unittest.TestCase):
         self.git('commit', '-qm', 'base')
         original = self.git('symbolic-ref', '--short', 'HEAD')
         self.git('checkout', '-qb', 'side')
-        self.write('02-Areas/Topic.md', 'side')
+        # A different size prevents Git's cached stat data hiding the edit
+        # when fixtures deliberately reuse an old mtime on fast CI filesystems.
+        self.write('02-Areas/Topic.md', 'side changed content\n')
         self.git('add', '.')
         stamp = str(int(time.time()) - 45 * 86400 - 43200) + ' +0000'
         self.git('commit', '-qm', 'side change', env={'GIT_AUTHOR_DATE': stamp})
@@ -175,6 +177,17 @@ class VaultTests(unittest.TestCase):
         out = self.run_cli().stdout
         self.assertIn('- 02-Areas/.md', out.split('\n\n')[2])
         self.assertNotIn('- 02-Areas/.visible.md', out.split('\n\n')[2])
+
+    def test_basename_collisions_and_self_links_keep_occurrence_counts(self):
+        self.write('02-Areas/Same.md')
+        self.write('03-Resources/Same.md')
+        self.write('02-Areas/Self.md', '[[Self]]')
+        self.write('02-Areas/Source.md', '[[Same]][[Same]]')
+        stale, _, orphan = self.run_cli().stdout.split('\n\n')
+        self.assertNotIn('Same.md', stale)
+        self.assertNotIn('Same.md', orphan)
+        self.assertIn('Self.md（最終更新45日前, 被リンク1件）', stale)
+        self.assertNotIn('Self.md', orphan)
 
     def test_invalid_inputs_fail_without_success_output(self):
         bad = subprocess.run(['bash', str(ROOT / 'scripts/find_candidates.sh'),

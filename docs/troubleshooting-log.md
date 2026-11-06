@@ -14,3 +14,8 @@
   before tests ran. The official python-versions manifest provides 3.9.25 for
   Ubuntu 24.04. Pin that runner and disable matrix fail-fast so both platform
   results are observable. This is a runner setup failure, not a test pass.
+- Fast CI filesystems exposed a same-size/same-mtime Git fixture edit that could
+  remain cached. Use different content sizes to establish an actual commit.
+  The pinned baseline also mixes GNU stat -f filesystem stdout into the mtime
+  fallback. Differential tests use tracked notes; Linux legacy benchmarks record
+  tracked_fixture=true. Current-only benchmarks and mtime tests remain Git-free.

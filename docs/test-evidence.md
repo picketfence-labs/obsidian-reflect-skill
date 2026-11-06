@@ -8,7 +8,7 @@ recorded in the PR. CI checks Linux/Python 3.9 and macOS/Python 3.13 separately.
 
 - Existing root exclusion shell test: PASS.
 - Existing wikilink shell test: 60 passed, 0 failed.
-- Twelve new boundary/error tests: PASS (Git author date vs mtime, rename/merge, thresholds,
+- Thirteen new boundary/error tests: PASS (Git author date vs mtime, rename/merge, thresholds,
   duplicates/exclusions, custom/default config, domains, symlinks, read/stat/Git
   failure, invalid input, and SIGTERM child cleanup with no partial stdout).
 - Optional legacy differential test: PASS across full domain index, all target
@@ -37,3 +37,8 @@ Self-verification is complete; independent human review/merge and consumer pin
 updates remain separate. No consumer gitlink or machine-global checkout is
 updated by this change. Additional Linux/minimum-Python results require CI;
 local macOS results must not be presented as cross-platform execution.
+
+The pinned legacy implementation has a GNU stat fallback failure for Git-free
+notes. Differential tests use tracked notes, and Linux legacy benchmarks explicitly
+report tracked_fixture=true. New-helper mtime behavior is tested independently;
+the large current-only scale fixture remains Git-free. See troubleshooting log.
